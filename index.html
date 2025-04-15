@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculateur_de_1</title>
+  <style>
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+
+<canvas id="mainCanvas"></canvas>
+
+<script>
+  const canvas = document.getElementById("mainCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // Adapter la taille du canvas à la fenêtre
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  // Indicateur pour ne pas ouvrir plusieurs fois
+  let popupOuvert = false;
+
+  function ouvrirFenetre() {
+    if (!popupOuvert) {
+      const popup = window.open(
+        "calculateur_de_1.html",
+        "PopupCanvas",
+        "width=235,height=218,left=200,top=100,resizable=no"
+      );
+
+      // Vérifie si la popup a bien été ouverte
+      if (popup && !popup.closed) {
+        popupOuvert = true;
+      } else {
+        popupOuvert = false;
+        console.warn("La popup a été bloquée !");
+        alert("Popup bloquée ! Autorisez les fenêtres pop-up dans votre navigateur.");
+      }
+    }
+  }
+
+  // Survol de la souris
+  canvas.addEventListener("mouseenter", ouvrirFenetre);
+
+  // Clic en fallback
+  canvas.addEventListener("click", ouvrirFenetre);
+
+  // Dessin d’un fond (optionnel)
+  ctx.fillStyle = "#222";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+</script>
+
+</body>
+</html>
