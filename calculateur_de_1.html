@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>calculateur de 1</title>
+  <style>
+    body {
+      background-color: deepSkyBlue;
+      font-family: Arial;
+      margin: 0;
+      padding: 10px;
+    }
+    #canvasTitle {
+      background: deepSkyBlue;
+      width: 170px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-style: italic;
+      font-size: 16px;
+      color: blue;
+      border: 1px solid #000;
+      margin-bottom: 20px;
+    }
+    .label {
+      color: black;
+      margin: 5px 0;
+    }
+    .output {
+      font-weight: bold;
+      color: red;
+    }
+    button {
+      margin: 5px;
+    }
+    #infoBox {
+      display: none;
+      background: white;
+      color: red;
+      border: 1px solid #aaa;
+      padding: 10px;
+      width: 180px;
+      position: absolute;
+      top: 10px;
+      left: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="canvasTitle">calculateur de 1</div>
+
+  <div class="label">coup pour trouver 1 : <span id="coup" class="output">aucun</span></div>
+  <div class="label">résultat : <span id="resultat" class="output"></span></div>
+  <div class="label">votre nombre :</div>
+  <input type="text" id="input" style="width: 160px;" />
+
+  <br>
+  <button onclick="calculer()" style="background: gold;">OK / Enter</button>
+  <button onclick="toggleAuto()" id="autoBtn" style="background: goldenrod;">Auto</button>
+  <button onclick="toggleInfo()" style="position: absolute; top: 10px; right: 10px;">i</button>
+
+  <div id="infoBox">
+    <p>
+      <strong>Error :</strong><br>
+      Error 1 = ce n'est pas un nombre entier<br>
+      Error 2 = nombre inférieur à 1<br>
+      Error 3 = bug prog (impossible)<br><br>
+      <strong>INFO :</strong><br>
+      opération :<br>
+      si pair → nombre = nombre / 2<br>
+      si impair → nombre = nombre * 3 + 1
+    </p>
+    <button onclick="toggleInfo()" style="background: cyan;">OK</button>
+  </div>
+
+  <script>
+    let auto = false;
+    let interval = null;
+
+    function calculer() {
+      let val = document.getElementById("input").value.trim();
+      let coup = 0;
+      let ok = false;
+      let resultat = document.getElementById("resultat");
+      let coupEl = document.getElementById("coup");
+
+      if (!/^\d+$/.test(val)) {
+        resultat.textContent = "error 1";
+        resultat.style.color = "red";
+        showInfo();
+        return;
+      }
+
+      let nombre = parseInt(val);
+      if (nombre < 1) {
+        resultat.textContent = "error 2";
+        resultat.style.color = "red";
+        showInfo();
+        return;
+      }
+
+      while (!ok) {
+        if (nombre === 1) {
+          ok = true;
+        } else if (nombre % 2 === 0) {
+          nombre = nombre / 2;
+          coup++;
+        } else {
+          nombre = nombre * 3 + 1;
+          coup++;
+        }
+
+        if (coup > 999) { // protection anti-boucle infinie
+          resultat.textContent = "error 3";
+          resultat.style.color = "red";
+          showInfo();
+          return;
+        }
+      }
+
+      resultat.textContent = nombre;
+      resultat.style.color = "black";
+      coupEl.textContent = coup;
+      coupEl.style.color = "black";
+    }
+
+    function toggleAuto() {
+      auto = !auto;
+      const btn = document.getElementById("autoBtn");
+      btn.style.background = auto ? "green" : "goldenrod";
+
+      if (auto) {
+        interval = setInterval(() => {
+          let chiffre = Math.floor(Math.random() * 10);
+          document.getElementById("input").value = chiffre + document.getElementById("input").value;
+          calculer();
+        }, 300);
+      } else {
+        clearInterval(interval);
+      }
+    }
+
+    function toggleInfo() {
+      const box = document.getElementById("infoBox");
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+
+    function showInfo() {
+      document.getElementById("infoBox").style.display = "block";
+    }
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        calculer();
+      } else if (e.key === "Delete") {
+        document.getElementById("input").value = "";
+      }
+    });
+  </script>
+
+</body>
+</html>
